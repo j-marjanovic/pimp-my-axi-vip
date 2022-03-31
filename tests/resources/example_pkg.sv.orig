@@ -1,0 +1,24 @@
+
+// this line will stay
+// this is something which will get removed
+// another line to be removed
+
+// enterprise-grade code
+`define VALUE_0 0
+`define VALUE_1 1
+`define VALUE_2 2
+
+package example_pkg;
+
+  function bit [31:0] add_one(bit [31:0] a);
+    // add one to the input value
+    bit [31:0] tmp;
+    tmp = a + `VALUE_1;
+    return tmp;
+  endfunction
+
+  function bit [31:0] add_two(bit [31:0] b);
+    return b + `VALUE_2;
+  endfunction
+
+endpackage
