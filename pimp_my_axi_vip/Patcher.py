@@ -1,3 +1,4 @@
+import dataclasses
 import enum
 import os
 import shutil
@@ -23,24 +24,37 @@ class _TokenChunkHeader:
         self.s = s
 
 
-class _TokenChunkLineNoChange(str):
+class _TokenChunkLine(str):
     pass
 
 
-class _TokenChunkLineAdd(str):
+class _TokenChunkLineNoChange(_TokenChunkLine):
     pass
 
 
-class _TokenChunkLineRem(str):
+class _TokenChunkLineAdd(_TokenChunkLine):
     pass
+
+
+class _TokenChunkLineRem(_TokenChunkLine):
+    pass
+
+
+@dataclasses.dataclass
+class Chunk:
+    header: _TokenChunkHeader
+    lines: List[_TokenChunkLine]
 
 
 class Patcher:
     @classmethod
     def patch(cls, in_filename: str, patch_filename: str):
         cls._create_backup(in_filename)
+
         patch_tokens = cls._tokenize_patch(patch_filename)
         cls._verify_patch(patch_tokens, in_filename)
+
+        patch_chunks = cls._create_chunks(patch_tokens)  # noqa: F841
 
     @staticmethod
     def _create_backup(in_filename: str):
@@ -121,3 +135,24 @@ class Patcher:
                 if token.is_add:
                     basename_from_patch = os.path.basename(token.s.strip())
                     assert basename_from_patch == os.path.basename(in_filename)
+
+    def _create_chunks(patch_tokens: List):
+        cur_hdr = None
+        cur_lines = []
+
+        chunks = []
+        for token in patch_tokens:
+            if isinstance(token, _TokenChunkHeader):
+                if cur_hdr is None:
+                    cur_hdr = token
+                else:
+                    chunks.append(Chunk(cur_hdr, cur_lines))
+                    cur_hdr = token
+                    cur_lines = []
+            elif isinstance(token, _TokenChunkLine):
+                cur_lines.append(token)
+
+        if cur_hdr is not None and len(cur_lines) != 0:
+            chunks.append(Chunk(cur_hdr, cur_lines))
+
+        return chunks
