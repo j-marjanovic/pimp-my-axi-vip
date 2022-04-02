@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 import os
-from typing import Union, Any
+from typing import Any, Union
 
 Openable = Union[str, bytes, int, "os.PathLike[Any]"]
 
