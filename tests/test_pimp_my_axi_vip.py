@@ -18,7 +18,7 @@ def test_xsim_ini_remove_empty(tmp_path):
     )
     f.write_text(XSIM_INI_CONTENT)
 
-    pmav.xsim_ini_remove_vivado_ip(str(f))
+    pmav.xsim_ini_remove_xilinx_vip(str(f))
 
     print(f.read_text())
 
@@ -49,6 +49,6 @@ def test_xsim_ini_remove(tmp_path):
     )
     f.write_text(XSIM_INI_CONTENT)
 
-    pmav.xsim_ini_remove_vivado_ip(str(f))
+    pmav.xsim_ini_remove_xilinx_vip(str(f))
 
     assert f.read_text() == XSIM_INI_CONTENT_EXPECTED

@@ -1,0 +1,28 @@
+diff --git a/./xilinx_vip/hdl/axi_vip_pkg.sv.bak b/./xilinx_vip/hdl/axi_vip_pkg.sv
+index 5be7e6d..3b1bfd6 100755
+--- a/./xilinx_vip/hdl/axi_vip_pkg.sv.bak
++++ b/./xilinx_vip/hdl/axi_vip_pkg.sv
+@@ -14698,9 +14698,10 @@ class xil_axi_slv_mem_model `AXI_PARAM_DECL extends xil_component;
+     Function: backdoor_memory_read
+     Back door read data from memory
+   */
+-  function bit[C_AXI_WDATA_WIDTH-1:0] backdoor_memory_read(input xil_axi_ulong addr );
+-    bit[C_AXI_WDATA_WIDTH-1:0]    read_payload;
+-    bit[C_AXI_WDATA_WIDTH-1:0]    tmp_beat;
++  // pimp-my-axi-vip: change `bit` to `logic`
++  function logic[C_AXI_WDATA_WIDTH-1:0] backdoor_memory_read(input xil_axi_ulong addr );
++    logic[C_AXI_WDATA_WIDTH-1:0]  read_payload;
++    logic[C_AXI_WDATA_WIDTH-1:0]  tmp_beat;
+     xil_axi_ulong                 quanta_start_addr;
+     xil_axi_uint                  addr_offset;
+ 
+@@ -14733,7 +14734,8 @@ class xil_axi_slv_mem_model `AXI_PARAM_DECL extends xil_component;
+   Function: backdoor_memory_read_4byte
+   Back door read data from memory in 4 byte chunks
+   */
+-  function bit[31:0] backdoor_memory_read_4byte(input xil_axi_ulong addr);
++  // pimp-my-axi-vip: change `bit` to `logic`
++  function logic[31:0] backdoor_memory_read_4byte(input xil_axi_ulong addr);
+     logic [C_AXI_WDATA_WIDTH-1:0]   temp_payload;
+     logic [31:0]                    ret_4byte;
+     xil_axi_ulong                   quanta_start_addr;

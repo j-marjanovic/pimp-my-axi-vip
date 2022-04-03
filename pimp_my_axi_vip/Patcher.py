@@ -184,6 +184,12 @@ class Patcher:
                     for chunk_line in chunk.lines:
                         if chunk_line[0] == " ":
                             out_file_list.append(chunk_line[1:])
+                            if not chunk_line[1:] == line:
+                                raise RuntimeError(
+                                    "patch does not apply cleanly, "
+                                    + f'expected "{chunk_line[1:-1]}", '
+                                    + f'received "{line[:-1]}"'
+                                )
                             if lineno != chunk.end_lineno:
                                 lineno, line = next(in_file_iter)
                         if chunk_line[0] == "+":

@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from pimp_my_axi_vip import Patcher
 
 
@@ -86,6 +88,26 @@ def test_full_patch_combined(tmpdir):
 
     Patcher.Patcher.patch(orig_file_test, patch_filename)
 
-    exp_out = [row for row in open(Path(__file__).parent / f"resources/example_pkg.sv")]
+    exp_out = [row for row in open(Path(__file__).parent / "resources/example_pkg.sv")]
+    result_out = [row for row in open(orig_file_test)]
+    assert exp_out == result_out
+
+
+def test_full_patch_twice(tmpdir):
+
+    orig_file_test = tmpdir.join("example2.sv")
+    orig_file_resources = open(
+        Path(__file__).parent / "resources/example2.sv.orig", "r"
+    )
+    orig_file_test.write(orig_file_resources.read())
+
+    patch_filename = Path(__file__).parent / "resources/example2.patch"
+
+    Patcher.Patcher.patch(orig_file_test, patch_filename)
+
+    with pytest.raises(Exception) as exc_info:
+        Patcher.Patcher.patch(orig_file_test, patch_filename)
+
+    exp_out = [row for row in open(Path(__file__).parent / "resources/example2.sv")]
     result_out = [row for row in open(orig_file_test)]
     assert exp_out == result_out

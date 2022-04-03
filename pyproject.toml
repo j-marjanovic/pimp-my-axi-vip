@@ -1,6 +1,6 @@
 [project]
 name = "pimp_my_axi_vip"
-version = "0.1"
+version = "0.2"
 description = "Make AXI VIP in Xilinx Vivado better"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,6 +12,9 @@ authors = [
 dependencies = [
   "pytest >= 7"
 ]
+
+[project.scripts]
+pimp-my-axi-vip = "pimp_my_axi_vip.pimp_my_axi_vip:main"
 
 [build-system]
 # These are the assumed default build requirements from pip:

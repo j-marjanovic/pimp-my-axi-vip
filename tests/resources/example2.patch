@@ -1,0 +1,18 @@
+diff --git a/example2.sv.orig b/example2.sv
+index f98a7b0..ff1ec8a 100644
+--- a/example2.sv.orig
++++ b/example2.sv
+@@ -10,9 +10,10 @@ package example2;
+ 
+   // this function basically does nothing
+   // just to test the patcher
+-  function bit [31:0] test_function();
+-    bit[31:0] variable_a;
+-    bit[31:0] variable_b;
++  // add a comment in a patch
++  function logic [31:0] test_function();
++    logic[31:0] variable_a;
++    logic[31:0] variable_b;
+     int tmp;
+     int tmp2;
+ 
