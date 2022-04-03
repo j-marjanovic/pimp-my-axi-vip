@@ -1,5 +1,7 @@
 import textwrap
 
+import pytest
+
 import pimp_my_axi_vip.pimp_my_axi_vip as pmav
 
 
@@ -18,11 +20,8 @@ def test_xsim_ini_remove_empty(tmp_path):
     )
     f.write_text(XSIM_INI_CONTENT)
 
-    pmav.xsim_ini_remove_xilinx_vip(str(f))
-
-    print(f.read_text())
-
-    assert f.read_text() == XSIM_INI_CONTENT
+    with pytest.raises(AssertionError):
+        pmav.xsim_ini_remove_xilinx_vip(str(f))
 
 
 def test_xsim_ini_remove(tmp_path):
