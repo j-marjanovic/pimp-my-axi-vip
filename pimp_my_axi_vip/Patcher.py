@@ -1,6 +1,7 @@
 import dataclasses
 import enum
 import os
+import re
 import shutil
 from typing import List
 
@@ -19,9 +20,8 @@ class _TokenFromToLine:
         self.is_add = is_add
 
 
-class _TokenChunkHeader:
-    def __init__(self, s: str):
-        self.s = s
+class _TokenChunkHeader(str):
+    pass
 
 
 class _TokenChunkLine(str):
@@ -54,7 +54,9 @@ class Patcher:
         patch_tokens = cls._tokenize_patch(patch_filename)
         cls._verify_patch(patch_tokens, in_filename)
 
-        patch_chunks = cls._create_chunks(patch_tokens)  # noqa: F841
+        patch_chunks = cls._create_chunks(patch_tokens)
+
+        cls._apply_patch(patch_chunks, in_filename)
 
     @staticmethod
     def _create_backup(in_filename: str):
@@ -156,3 +158,40 @@ class Patcher:
             chunks.append(Chunk(cur_hdr, cur_lines))
 
         return chunks
+
+    def _apply_patch(patch_chunks: List, in_filename: str):
+
+        with open(in_filename, "r") as in_file:
+            in_file_iter = enumerate(in_file.readlines(), start=1)
+            chunk_iter = iter(patch_chunks)
+            chunk = next(chunk_iter)
+            out_file_list = []
+
+            for lineno, line in in_file_iter:
+                print("LINE", (lineno, line))
+                m = re.match(r"@@ -(\d+),(\d+) \+(\d+),(\d+) @@", chunk.header)
+                chunk_start = int(m.group(1))
+                chunk_end = chunk_start + int(m.group(2)) - 1
+
+                if lineno == chunk_start:
+                    # in chunk
+                    for chunk_line in chunk.lines:
+                        print("CHUNK LINE", (chunk_line,))
+                        if chunk_line[0] == " ":
+                            out_file_list.append(chunk_line[1:])
+                            if lineno != chunk_end:
+                                lineno, line = next(in_file_iter)
+                        if chunk_line[0] == "+":
+                            out_file_list.append(chunk_line[1:])
+                        if chunk_line[0] == '-':
+                            lineno, line = next(in_file_iter)
+                else:
+                    # not in chunk, just pass through
+                    out_file_list.append(line)
+
+        for line in out_file_list:
+            print(line[:-1])
+
+        with open(in_filename, "w") as in_file:
+            for line in out_file_list:
+                in_file.write(line)

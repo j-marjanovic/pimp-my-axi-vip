@@ -1,0 +1,19 @@
+diff --git a/modify.txt.orig b/modify.txt
+index 0ee22a5..9a30982 100644
+--- a/modify.txt.orig
++++ b/modify.txt
+@@ -7,10 +7,10 @@ ff
+ gg
+ hh
+ ii
+-jj
+-kk
+-ll
+-mm
++JJ
++KK
++LL
++MM
+ nn
+ oo
+ pp

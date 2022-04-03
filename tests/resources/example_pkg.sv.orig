@@ -1,4 +1,7 @@
 
+`timescale 1ps/1ps
+`default_nettype none
+
 // this line will stay
 // this is something which will get removed
 // another line to be removed
@@ -9,6 +12,8 @@
 `define VALUE_2 2
 
 package example_pkg;
+  // this is a simple package to demonstrate patching from python
+  // another line here
 
   function bit [31:0] add_one(bit [31:0] a);
     // add one to the input value

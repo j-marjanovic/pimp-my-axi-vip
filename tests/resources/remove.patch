@@ -1,0 +1,16 @@
+diff --git a/remove.txt.orig b/remove.txt
+index 0ee22a5..5947002 100644
+--- a/remove.txt.orig
++++ b/remove.txt
+@@ -6,11 +6,6 @@ ee
+ ff
+ gg
+ hh
+-ii
+-jj
+-kk
+-ll
+-mm
+ nn
+ oo
+ pp

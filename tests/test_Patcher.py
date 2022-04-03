@@ -45,12 +45,31 @@ def test_create_chunks():
     assert len(chunks) == 3
 
 
-def test_full_patch(tmpdir):
+def _test_full_patch_generic(test_name, tmpdir):
+    orig_file_test = tmpdir.join(f"{test_name}.txt")
+    orig_file_test.write(
+        (open(Path(__file__).parent / f"resources/{test_name}.txt.orig", "r")).read()
+    )
 
-    orig_file_test = tmpdir.join("example_pkg.sv")
-    orig_file_resources = open(Path(__file__).parent / "resources/example_pkg.sv", "r")
-    orig_file_test.write(orig_file_resources.read())
-
-    patch_filename = Path(__file__).parent / "resources/example_pkg.patch"
+    patch_filename = Path(__file__).parent / f"resources/{test_name}.patch"
 
     Patcher.Patcher.patch(orig_file_test, patch_filename)
+
+    exp_out = [
+        row for row in open(Path(__file__).parent / f"resources/{test_name}.txt")
+    ]
+    result_out = [row for row in open(orig_file_test)]
+    # assert len(exp_out) == len(result_out)
+    assert exp_out == result_out
+
+
+def test_full_patch_add(tmpdir):
+    _test_full_patch_generic("add", tmpdir)
+
+
+def test_full_patch_modify(tmpdir):
+    _test_full_patch_generic("modify", tmpdir)
+
+
+def test_full_patch_remove(tmpdir):
+    _test_full_patch_generic("remove", tmpdir)

@@ -1,8 +1,9 @@
 diff --git a/example_pkg.sv.orig b/example_pkg.sv
-index 94eaa1f..63b87e0 100644
+index 18575aa..0684444 100644
 --- a/example_pkg.sv.orig
 +++ b/example_pkg.sv
-@@ -1,7 +1,5 @@
+@@ -3,8 +3,6 @@
+ `default_nettype none
  
  // this line will stay
 -// this is something which will get removed
@@ -10,9 +11,9 @@ index 94eaa1f..63b87e0 100644
  
  // enterprise-grade code
  `define VALUE_0 0
-@@ -10,10 +8,10 @@
- 
- package example_pkg;
+@@ -15,10 +13,10 @@ package example_pkg;
+   // this is a simple package to demonstrate patching from python
+   // another line here
  
 -  function bit [31:0] add_one(bit [31:0] a);
 +  function logic [31:0] add_one(logic [31:0] a);
@@ -24,7 +25,7 @@ index 94eaa1f..63b87e0 100644
      return tmp;
    endfunction
  
-@@ -21,4 +19,7 @@ package example_pkg;
+@@ -26,4 +24,7 @@ package example_pkg;
      return b + `VALUE_2;
    endfunction
  
