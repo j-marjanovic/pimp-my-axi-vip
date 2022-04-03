@@ -44,6 +44,15 @@ class _TokenChunkLineRem(_TokenChunkLine):
 class Chunk:
     header: _TokenChunkHeader
     lines: List[_TokenChunkLine]
+    start_lineno: int
+    end_lineno: int
+
+    def __init__(self, header, lines):
+        self.header = header
+        self.lines = lines
+        m = re.match(r"@@ -(\d+),(\d+) \+(\d+),(\d+) @@", header)
+        self.start_lineno = int(m.group(1))
+        self.end_lineno = self.start_lineno + int(m.group(2)) - 1
 
 
 class Patcher:
@@ -159,38 +168,35 @@ class Patcher:
 
         return chunks
 
-    def _apply_patch(patch_chunks: List, in_filename: str):
+    def _apply_patch(patch_chunks: List[Chunk], in_filename: str):
 
         with open(in_filename, "r") as in_file:
             in_file_iter = enumerate(in_file.readlines(), start=1)
+
             chunk_iter = iter(patch_chunks)
             chunk = next(chunk_iter)
+
             out_file_list = []
 
             for lineno, line in in_file_iter:
-                print("LINE", (lineno, line))
-                m = re.match(r"@@ -(\d+),(\d+) \+(\d+),(\d+) @@", chunk.header)
-                chunk_start = int(m.group(1))
-                chunk_end = chunk_start + int(m.group(2)) - 1
-
-                if lineno == chunk_start:
+                if chunk is not None and lineno == chunk.start_lineno:
                     # in chunk
                     for chunk_line in chunk.lines:
-                        print("CHUNK LINE", (chunk_line,))
                         if chunk_line[0] == " ":
                             out_file_list.append(chunk_line[1:])
-                            if lineno != chunk_end:
+                            if lineno != chunk.end_lineno:
                                 lineno, line = next(in_file_iter)
                         if chunk_line[0] == "+":
                             out_file_list.append(chunk_line[1:])
-                        if chunk_line[0] == '-':
+                        if chunk_line[0] == "-":
                             lineno, line = next(in_file_iter)
+                    try:
+                        chunk = next(chunk_iter)
+                    except StopIteration:
+                        chunk = None
                 else:
                     # not in chunk, just pass through
                     out_file_list.append(line)
-
-        for line in out_file_list:
-            print(line[:-1])
 
         with open(in_filename, "w") as in_file:
             for line in out_file_list:
