@@ -105,7 +105,7 @@ def test_full_patch_twice(tmpdir):
 
     Patcher.Patcher.patch(orig_file_test, patch_filename)
 
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         Patcher.Patcher.patch(orig_file_test, patch_filename)
 
     exp_out = [row for row in open(Path(__file__).parent / "resources/example2.sv")]
